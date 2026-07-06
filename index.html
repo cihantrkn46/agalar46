@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="theme-color" content="#0a0a0a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="AĞALAR VİP">
+  <link rel="icon" type="image/png" href="icon.png">
+  <link rel="apple-touch-icon" href="icon.png">
+  <title>AĞALAR VİP • MCT YAZILIM</title>
+  <style>
+    :root {
+      --gold: #d4a843;
+      --gold-light: #f0d68a;
+      --gold-dark: #8b6914;
+      --bg: #0a0a08;
+      --surface: #161610;
+      --border: #3d3218;
+      --text: #e8dcc8;
+      --online: #3ea34b;
+      --danger: #c44242;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background: var(--bg);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.5rem;
+      touch-action: manipulation;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      color: var(--text);
+    }
+
+    .app-container {
+      width: 100%;
+      max-width: 440px;
+      background: var(--surface);
+      border-radius: 2rem;
+      box-shadow: 0 20px 40px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.03);
+      overflow: hidden;
+      padding: 1.5rem 1rem;
+    }
+
+    .login-screen { display: flex; flex-direction: column; align-items: center; gap: 1.2rem; }
+    .logo { font-size: 3.5rem; filter: drop-shadow(0 0 10px rgba(200,150,40,0.4)); }
+    .title {
+      font-size: 2.2rem; font-weight: 900; letter-spacing: 3px;
+      background: linear-gradient(180deg, #f9e076, #b68b28);
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .subtitle {
+      font-size: 0.85rem; color: var(--gold-light); letter-spacing: 2px;
+      padding: 0.4rem 1rem; border-top: 1px solid rgba(180,148,60,0.4);
+      border-bottom: 1px solid rgba(180,148,60,0.4);
+    }
+    .input-wrapper {
+      width: 100%; display: flex; flex-direction: column; gap: 0.3rem;
+    }
+    .input-wrapper label {
+      font-size: 0.75rem; font-weight: 600; color: var(--gold-light);
+      letter-spacing: 1px; margin-left: 0.5rem;
+    }
+    .modern-input {
+      width: 100%; padding: 0.9rem 1.2rem; background: rgba(0,0,0,0.4);
+      border: 1.5px solid var(--border); border-radius: 2.5rem;
+      color: #fff; font-size: 0.95rem; text-align: center; outline: none;
+      transition: 0.2s;
+    }
+    .modern-input:focus { border-color: var(--gold); box-shadow: 0 0 12px rgba(180,150,40,0.3); }
+    .btn-primary {
+      background: linear-gradient(135deg, #e0b84c, #8a6c20);
+      border: none; color: #111; font-weight: 800; font-size: 1rem;
+      letter-spacing: 2px; padding: 0.8rem 2rem; border-radius: 2.5rem;
+      cursor: pointer; text-transform: uppercase; box-shadow: 0 8px 20px rgba(0,0,0,0.5);
+      transition: 0.15s; width: 100%; max-width: 250px;
+    }
+    .btn-primary:active { transform: scale(0.97); }
+    .message { font-weight: 600; font-size: 0.9rem; min-height: 1.2rem; }
+    .msg-error { color: #ff5e5e; }
+    .msg-blocked { color: #ffa726; }
+
+    .dashboard { display: none; flex-direction: column; gap: 1rem; }
+    .top-bar {
+      display: flex; align-items: center; justify-content: space-between;
+      background: rgba(0,0,0,0.3); border-radius: 2.5rem; padding: 0.5rem 0.8rem;
+      border: 1px solid var(--border);
+    }
+    .profile-area { display: flex; align-items: center; gap: 0.6rem; }
+    .avatar {
+      width: 42px; height: 42px; border-radius: 50%; border: 2px solid var(--gold);
+      background-size: cover; background-position: center; background-color: #1e1a0e;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 800; color: var(--gold-light); font-size: 1.3rem;
+    }
+    .profile-text { display: flex; flex-direction: column; }
+    .name { font-weight: 700; font-size: 0.9rem; color: #f5e2a9; }
+    .role { font-size: 0.65rem; color: var(--gold-light); letter-spacing: 0.5px; }
+    .icon-btn {
+      background: transparent; border: 1px solid var(--border); color: var(--gold-light);
+      padding: 0.4rem 0.8rem; border-radius: 2rem; font-size: 0.7rem; font-weight: 600;
+      cursor: pointer; letter-spacing: 0.5px; transition: 0.2s;
+    }
+    .icon-btn:active { background: var(--gold-dark); color: #000; }
+
+    .radio-card {
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 1.5rem;
+      padding: 1rem;
+    }
+    .radio-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem;
+    }
+    .radio-title { font-weight: 700; color: var(--gold); font-size: 0.9rem; display: flex; align-items: center; gap: 0.4rem; }
+    .freq {
+      background: #000; padding: 0.2rem 0.8rem; border-radius: 1rem;
+      font-family: monospace; color: var(--gold); font-size: 0.8rem;
+    }
+    .channel-row {
+      display: flex; flex-wrap: wrap; gap: 0.3rem; margin-bottom: 0.8rem;
+    }
+    .ch-btn {
+      background: #1a160a; border: 1px solid #4a3a18; color: #aa8e3c;
+      padding: 0.3rem 0.8rem; border-radius: 1.2rem; font-size: 0.7rem; font-weight: 700;
+      cursor: pointer; transition: 0.15s;
+    }
+    .ch-btn.active { background: var(--gold); color: #000; border-color: #f0d68a; box-shadow: 0 0 10px rgba(200,160,50,0.4); }
+    .ch-btn.locked { opacity: 0.4; pointer-events: none; text-decoration: line-through; }
+
+    .msg-area {
+      background: #050403; border: 1px solid #2e2612; border-radius: 1rem;
+      padding: 0.5rem; height: 180px; overflow-y: auto; margin-bottom: 0.6rem;
+      font-family: 'Courier New', monospace; font-size: 0.8rem;
+    }
+    .msg-bubble {
+      display: flex; flex-wrap: wrap; align-items: center; gap: 0.3rem;
+      padding: 0.4rem 0.5rem; margin: 0.2rem 0; background: rgba(180,148,60,0.06);
+      border-radius: 0.6rem; border-left: 3px solid var(--gold-dark);
+    }
+    .msg-sender { font-weight: 700; color: var(--gold-light); font-size: 0.75rem; }
+    .msg-body { color: #ccc; flex: 1; word-break: break-word; }
+    .msg-time { font-size: 0.6rem; color: #6b5c3a; margin-left: auto; }
+    .del-btn { background: none; border: none; color: #8a6a3a; cursor: pointer; padding: 0 0.2rem; font-size: 0.9rem; }
+    .play-btn {
+      background: var(--gold-dark); border: none; color: #000; font-weight: bold;
+      border-radius: 0.6rem; padding: 0.15rem 0.6rem; font-size: 0.65rem; cursor: pointer;
+    }
+
+    .input-row { display: flex; gap: 0.4rem; align-items: center; }
+    .msg-input {
+      flex: 1; background: #0d0c08; border: 1px solid #4a3a18; border-radius: 2rem;
+      padding: 0.6rem 1rem; color: #fff; outline: none; font-size: 0.85rem;
+    }
+    .send-btn {
+      background: var(--gold); border: none; color: #000; font-weight: 700;
+      border-radius: 2rem; padding: 0.6rem 1rem; cursor: pointer; font-size: 0.85rem;
+    }
+    .mic-btn {
+      background: #2a1f0a; border: 2px solid var(--gold); color: var(--gold-light);
+      font-size: 1.2rem; width: 40px; height: 40px; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center; cursor: pointer;
+      transition: 0.15s;
+    }
+    .mic-btn.recording { background: var(--danger); border-color: #ff5e5e; color: #fff; animation: pulse 0.8s infinite; }
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.05); } }
+
+    .members-card {
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 1.2rem;
+      padding: 0.8rem;
+    }
+    .members-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin-top: 0.5rem; }
+    .member-item {
+      display: flex; align-items: center; gap: 0.4rem; background: rgba(0,0,0,0.3);
+      border-radius: 1rem; padding: 0.3rem 0.6rem;
+    }
+    .dot { width: 8px; height: 8px; border-radius: 50%; background: #666; }
+    .dot.active { background: var(--online); box-shadow: 0 0 6px var(--online); }
+    .mission-card {
+      background: rgba(0,0,0,0.3); border: 1px solid var(--border); border-radius: 1.2rem;
+      padding: 0.8rem; text-align: center;
+    }
+    .footer { text-align: center; font-size: 0.65rem; color: var(--gold-light); letter-spacing: 1px; margin-top: 0.3rem; }
+
+    @media (max-width: 380px) {
+      .members-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app-container" id="appContainer">
+    <!-- GİRİŞ -->
+    <div id="loginScreen" class="login-screen">
+      <div class="logo">🌙⭐</div>
+      <div class="title">AĞALAR VİP</div>
+      <div class="subtitle">✦ SALON BAŞLATILIYOR ✦</div>
+      <div class="input-wrapper">
+        <label>KULLANICI ADI</label>
+        <input type="text" id="usernameInput" class="modern-input" placeholder="İsim girin..." autocomplete="off" inputmode="text">
+      </div>
+      <div class="input-wrapper">
+        <label>ŞİFRE</label>
+        <input type="password" id="passwordInput" class="modern-input" placeholder="••••••" autocomplete="off">
+      </div>
+      <button class="btn-primary" id="loginBtn">GİRİŞ YAP</button>
+      <div id="messageBox" class="message"></div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dashboardScreen" class="dashboard">
+      <div class="top-bar">
+        <div class="profile-area">
+          <div class="avatar" id="userAvatar">A</div>
+          <div class="profile-text">
+            <span class="name" id="displayName"></span>
+            <span class="role" id="displaySpecial"></span>
+          </div>
+        </div>
+        <div style="display:flex;gap:0.3rem;">
+          <button class="icon-btn" id="changePassBtn">🔐</button>
+          <button class="icon-btn" id="viewPasswordsBtn" style="display:none;">👁️</button>
+          <button class="icon-btn" id="logoutBtn">ÇIK</button>
+        </div>
+      </div>
+
+      <div class="radio-card">
+        <div class="radio-header">
+          <span class="radio-title"><span>📻</span> TELSİZ</span>
+          <span class="freq" id="freqDisplay">145.600</span>
+        </div>
+        <div class="channel-row" id="channelTabs">
+          <button class="ch-btn active" data-channel="ana">ANA</button>
+          <button class="ch-btn" data-channel="kacak">KAÇAK</button>
+          <button class="ch-btn" data-channel="pazar">PAZAR</button>
+          <button class="ch-btn" data-channel="eskort">ESKORT</button>
+          <button class="ch-btn" data-channel="ozel">ÖZEL</button>
+        </div>
+        <div class="msg-area" id="messagesBox"></div>
+        <div class="input-row">
+          <input type="text" class="msg-input" id="msgInput" placeholder="Mesaj yazın...">
+          <button class="send-btn" id="sendMsgBtn">GÖNDER</button>
+          <button class="mic-btn" id="pttBtn" title="Bas‑Konuş">🎤</button>
+        </div>
+      </div>
+
+      <div class="members-card">
+        <div style="font-weight:700;color:var(--gold);">🐺 AĞALAR</div>
+        <div class="members-grid" id="agalarGrid"></div>
+      </div>
+      <div class="mission-card">
+        <div style="font-size:0.7rem;color:#8a7a4a;">AKTİF GÖREV</div>
+        <div style="font-weight:800;color:#f0d68a;margin-top:0.2rem;" id="gorevText"></div>
+      </div>
+      <div class="footer">MCT YAZILIM</div>
+    </div>
+  </div>
+
+  <script>
+    (() => {
+      // Sabitler
+      const defaultPasswords = {
+        "AHMET GÜL": "kacak123",
+        "ADNAN MENGEŞ": "pazar456",
+        "HALİL İBRAHİM KURT": "eskort789",
+        "MEHMET CİHAN TÜRKAN": "patron000"
+      };
+      const users = [
+        { name: "AHMET GÜL", unvan: "KAÇAKÇILIK", gorev: "📦 YURTDIŞINDAN KAÇAK MAL GETİREN EFSANE", special: "BÖLGENİN EN BÜYÜK KAÇAKÇISI", avatarLetter: "A", photoFile: "ahmet_gul.jpg", channels: ["ana","kacak"] },
+        { name: "ADNAN MENGEŞ", unvan: "PAZARLAMACI", gorev: "💎 ELİT KARI KIZ PAZARLAMA İMPARATORU", special: "PAZARLAMA DEHASI", avatarLetter: "A", photoFile: "adnan_menges.jpg", channels: ["ana","pazar"] },
+        { name: "HALİL İBRAHİM KURT", unvan: "ESKORT", gorev: "🛡️ GÖLGE GİBİ HER TÜRLÜ MAL VE İNSAN TAŞIYICI", special: "YOLUN KRALI", avatarLetter: "H", photoFile: "halil_ibrahim_kurt.jpg", channels: ["ana","eskort"] },
+        { name: "MEHMET CİHAN TÜRKAN", unvan: "PATRON", gorev: "👑 TÜM AĞIN VE SİSTEMİN YÜCE YÖNETİCİSİ", special: "BÜYÜK PATRON", avatarLetter: "M", photoFile: "mehmet_cihan_turkan.jpg", channels: ["ana","kacak","pazar","eskort","ozel"] }
+      ];
+      const freqs = { ana:"145.600", kacak:"146.200", pazar:"147.800", eskort:"148.500", ozel:"149.900" };
+
+      // State
+      let currentUser = null, currentChannel = "ana";
+      const MSG_KEY = "agalar_msg_v10", PASS_KEY = "agalar_pass_v5";
+      let mediaRecorder, audioChunks;
+
+      // Yardımcılar
+      const $ = id => document.getElementById(id);
+      const getPasswords = () => { try { return JSON.parse(localStorage.getItem(PASS_KEY)) || {...defaultPasswords}; } catch { return {...defaultPasswords}; } };
+      const savePasswords = p => localStorage.setItem(PASS_KEY, JSON.stringify(p));
+      const getUserPassword = name => getPasswords()[name] || defaultPasswords[name] || "";
+      const getMessages = () => { try { return JSON.parse(localStorage.getItem(MSG_KEY)) || {}; } catch { return {}; } };
+      const saveMessages = m => localStorage.setItem(MSG_KEY, JSON.stringify(m));
+      const getChannelMsgs = ch => getMessages()[ch] || [];
+      const addMessage = (ch, sender, text, voice=null) => {
+        const all = getMessages();
+        if (!all[ch]) all[ch] = [];
+        all[ch].push({ id: Date.now(), sender, text, voice, time: new Date().toLocaleTimeString('tr-TR', {hour:'2-digit',minute:'2-digit'}) });
+        if (all[ch].length > 60) all[ch] = all[ch].slice(-60);
+        saveMessages(all);
+      };
+      const deleteMessage = (ch, id) => {
+        const all = getMessages();
+        if (all[ch]) all[ch] = all[ch].filter(m => m.id !== id);
+        saveMessages(all);
+      };
+
+      // DOM
+      const loginScreen = $('loginScreen'), dashboardScreen = $('dashboardScreen');
+      const usernameInput = $('usernameInput'), passwordInput = $('passwordInput'), loginBtn = $('loginBtn');
+      const messageBox = $('messageBox'), logoutBtn = $('logoutBtn'), changePassBtn = $('changePassBtn');
+      const viewPasswordsBtn = $('viewPasswordsBtn'), userAvatar = $('userAvatar');
+      const displayName = $('displayName'), displaySpecial = $('displaySpecial'), freqDisplay = $('freqDisplay');
+      const messagesBox = $('messagesBox'), msgInput = $('msgInput'), sendMsgBtn = $('sendMsgBtn'), pttBtn = $('pttBtn');
+      const channelTabs = $('channelTabs'), agalarGrid = $('agalarGrid'), gorevText = $('gorevText');
+
+      // Render
+      const renderMessages = () => {
+        const msgs = getChannelMsgs(currentChannel);
+        messagesBox.innerHTML = msgs.length ? msgs.map(m => {
+          const canDel = currentUser && (currentUser.name === m.sender || currentUser.name === "MEHMET CİHAN TÜRKAN");
+          const del = canDel ? `<button class="del-btn" data-id="${m.id}">🗑️</button>` : '';
+          if (m.voice) {
+            return `<div class="msg-bubble"><span class="msg-sender">${m.sender}</span> 🎤 <button class="play-btn" data-voice="${m.voice}">▶ Dinle</button>${del}<span class="msg-time">${m.time}</span></div>`;
+          }
+          return `<div class="msg-bubble"><span class="msg-sender">${m.sender}</span> <span class="msg-body">${m.text}</span>${del}<span class="msg-time">${m.time}</span></div>`;
+        }).join('') : '<div style="color:#4a3a18;text-align:center;">--- KANAL SESSİZ ---</div>';
+        messagesBox.scrollTop = messagesBox.scrollHeight;
+        document.querySelectorAll('.play-btn').forEach(b => {
+          b.onclick = () => {
+            const audio = new Audio(b.dataset.voice);
+            audio.play().catch(e => alert('Ses çalınamadı.'));
+          };
+        });
+        document.querySelectorAll('.del-btn').forEach(b => {
+          b.onclick = () => { deleteMessage(currentChannel, Number(b.dataset.id)); renderMessages(); };
+        });
+      };
+
+      const updateChannels = () => {
+        document.querySelectorAll('.ch-btn').forEach(b => {
+          const ch = b.dataset.channel;
+          if (currentUser.channels.includes(ch)) { b.classList.remove('locked'); b.style.pointerEvents = 'auto'; b.style.textDecoration = 'none'; }
+          else { b.classList.add('locked'); b.style.pointerEvents = 'none'; b.style.textDecoration = 'line-through'; }
+        });
+      };
+
+      const switchChannel = ch => {
+        if (!currentUser.channels.includes(ch)) return;
+        currentChannel = ch;
+        freqDisplay.textContent = freqs[ch] + " MHz";
+        document.querySelectorAll('.ch-btn').forEach(b => b.classList.remove('active'));
+        document.querySelector(`.ch-btn[data-channel="${ch}"]`)?.classList.add('active');
+        renderMessages();
+      };
+
+      const loadAvatar = (user, el) => {
+        el.style.backgroundImage = ''; el.textContent = user.avatarLetter;
+        const img = new Image();
+        img.onload = () => { el.style.backgroundImage = `url('${user.photoFile}')`; el.textContent = ''; };
+        img.onerror = () => { el.style.backgroundImage = 'none'; el.textContent = user.avatarLetter; };
+        img.src = user.photoFile;
+      };
+
+      const renderDashboard = () => {
+        if (!currentUser) return;
+        loadAvatar(currentUser, userAvatar);
+        displayName.textContent = currentUser.name;
+        displaySpecial.textContent = currentUser.special;
+        gorevText.textContent = currentUser.gorev;
+        updateChannels();
+        agalarGrid.innerHTML = users.map(u => `
+          <div class="member-item">
+            <span class="dot ${currentUser && u.name === currentUser.name ? 'active' : ''}"></span>
+            <span style="font-weight:600;font-size:0.7rem;color:#ddd;">${u.name}</span>
+          </div>`).join('');
+        viewPasswordsBtn.style.display = currentUser.name === "MEHMET CİHAN TÜRKAN" ? 'inline-block' : 'none';
+        renderMessages();
+      };
+
+      // Ses kaydı
+      const startRecording = async () => {
+        try {
+          const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+          mediaRecorder = new MediaRecorder(stream);
+          audioChunks = [];
+          mediaRecorder.ondataavailable = e => audioChunks.push(e.data);
+          mediaRecorder.onstop = () => {
+            const blob = new Blob(audioChunks, { type: 'audio/webm' });
+            const reader = new FileReader();
+            reader.onloadend = () => { addMessage(currentChannel, currentUser.name, '', reader.result); renderMessages(); };
+            reader.readAsDataURL(blob);
+            stream.getTracks().forEach(t => t.stop());
+          };
+          mediaRecorder.start();
+          pttBtn.classList.add('recording');
+        } catch { alert('Mikrofon izni gerekli!'); }
+      };
+      const stopRecording = () => {
+        if (mediaRecorder && mediaRecorder.state === 'recording') { mediaRecorder.stop(); pttBtn.classList.remove('recording'); }
+      };
+
+      pttBtn.addEventListener('pointerdown', startRecording);
+      pttBtn.addEventListener('pointerup', stopRecording);
+      pttBtn.addEventListener('pointerleave', stopRecording);
+
+      // Giriş
+      loginBtn.onclick = () => {
+        const name = usernameInput.value.trim().toUpperCase();
+        const pass = passwordInput.value.trim();
+        if (!name || !pass) return (messageBox.textContent = 'İsim ve şifre gerekli', messageBox.className = 'message msg-error');
+        const user = users.find(u => u.name === name);
+        if (!user) return (messageBox.textContent = 'Kullanıcı bulunamadı', messageBox.className = 'message msg-blocked');
+        if (getUserPassword(user.name) !== pass) return (messageBox.textContent = 'Şifre yanlış', messageBox.className = 'message msg-blocked');
+        currentUser = user;
+        loginScreen.style.display = 'none'; dashboardScreen.style.display = 'flex';
+        usernameInput.value = passwordInput.value = ''; messageBox.textContent = '';
+        currentChannel = 'ana'; renderDashboard(); switchChannel('ana');
+        addMessage('ana', '📢 SİSTEM', `${user.name} aramıza katıldı.`);
+        renderMessages();
+        if (window.navigator.vibrate) window.navigator.vibrate(50);
+      };
+      usernameInput.addEventListener('keydown', e => { if (e.key==='Enter') passwordInput.focus(); });
+      passwordInput.addEventListener('keydown', e => { if (e.key==='Enter') loginBtn.click(); });
+
+      logoutBtn.onclick = () => {
+        if (currentUser) addMessage('ana', '📢 SİSTEM', `${currentUser.name} çıkış yaptı.`);
+        currentUser = null; dashboardScreen.style.display = 'none'; loginScreen.style.display = 'flex';
+      };
+
+      channelTabs.onclick = e => {
+        const btn = e.target.closest('.ch-btn');
+        if (btn && !btn.classList.contains('locked')) switchChannel(btn.dataset.channel);
+      };
+
+      sendMsgBtn.onclick = () => {
+        if (!currentUser) return;
+        const text = msgInput.value.trim();
+        if (!text) return;
+        addMessage(currentChannel, currentUser.name, text);
+        msgInput.value = ''; renderMessages();
+      };
+      msgInput.addEventListener('keydown', e => { if (e.key==='Enter') sendMsgBtn.click(); });
+
+      // Şifre değiştir
+      changePassBtn.onclick = () => {
+        const old = prompt('Eski şifre:');
+        if (!old || old !== getUserPassword(currentUser.name)) return alert('Eski şifre yanlış!');
+        const newP = prompt('Yeni şifre (en az 4 karakter):');
+        if (!newP || newP.length < 4) return alert('Geçersiz!');
+        const confirm = prompt('Yeni şifre tekrar:');
+        if (newP !== confirm) return alert('Uyuşmuyor!');
+        const passObj = getPasswords(); passObj[currentUser.name] = newP; savePasswords(passObj);
+        addMessage('ana', '🔒 SİSTEM', `${currentUser.name} şifresini değiştirdi.`);
+        if (currentChannel === 'ana') renderMessages();
+        alert('Şifre güncellendi.');
+      };
+
+      viewPasswordsBtn.onclick = () => {
+        const passwords = getPasswords();
+        let list = 'TÜM ŞİFRELER:\n';
+        users.forEach(u => list += `${u.name}: ${passwords[u.name]}\n`);
+        alert(list);
+      };
+
+      // Boşta kalma kilidi (15dk)
+      let idle;
+      const resetIdle = () => { clearTimeout(idle); if (currentUser) idle = setTimeout(() => { alert('Oturum süresi doldu.'); logoutBtn.click(); }, 900000); };
+      document.addEventListener('click', resetIdle);
+      document.addEventListener('keydown', resetIdle);
+      document.addEventListener('touchstart', resetIdle);
+      window.addEventListener('load', () => usernameInput.focus());
+    })();
+  </script>
+</body>
+</html>
